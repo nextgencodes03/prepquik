@@ -35,7 +35,8 @@ export class CommonService {
   loadCSV(url: any) {
     this.questionAndAnswersArray = [];
     this.http
-      .get(`http://127.0.0.1:8080/get_file/${url}`)
+      // .get(`http://127.0.0.1:8080/get_file/${url}`)
+      .get(url)
       .subscribe((data: any) => {
         this.questionAndAnswersArray = JSON.parse(data);
       });
@@ -47,7 +48,8 @@ export class CommonService {
    */
   loadPdf(url: any): void {
     this.http
-      .get(`http://127.0.0.1:8080/get_pdf/${url}`, { responseType: 'blob' })
+      // .get(`http://127.0.0.1:8080/get_pdf/${url}`, { responseType: 'blob' })
+      .get('http://127.0.0.1:8080/get_pdf/CBSE_10_Civics_Outcomes of Democracy_Outcomes of Democracy.pdf', { responseType: 'blob' })
       .subscribe((response: Blob) => {
         const fileURL = URL.createObjectURL(response);
         // Open the PDF in a new browser tab
@@ -61,7 +63,8 @@ export class CommonService {
    */
   loadText(url: any) {
     this.http
-      .get(`http://127.0.0.1:8080/get_file/${url}`)
+      // .get(`http://127.0.0.1:8080/get_file/${url}`)
+      .get(url)
       .subscribe((response) => {
         this.textContent = response;
       });

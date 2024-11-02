@@ -89,28 +89,32 @@ export class QuestionBankComponent implements OnInit {
         / /g,
         '_'
       )}_Long Answers`;
-      this.commonService.loadCSV(url);
+      // this.commonService.loadCSV(url);
+      this.commonService.loadCSV('http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Long Answers');
     }
     if (paylaod['questionType'] === 'Short Answers') {
       const url = `${paylaod.board}_${paylaod.class}_${paylaod.chapter.replace(
         / /g,
         '_'
       )}_Short Answers`;
-      this.commonService.loadCSV(url);
+      // this.commonService.loadCSV(url);
+      this.commonService.loadCSV('http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Short Answers');
     }
     if (paylaod['questionType'] === 'Multiple Choice') {
       const url = `${paylaod.board}_${paylaod.class}_${paylaod.chapter.replace(
         / /g,
         '_'
       )}_Multiple Choice`;
-      this.commonService.loadCSV(url);
+      // this.commonService.loadCSV(url);
+      this.commonService.loadCSV('http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Multiple Choice');
     }
     if (paylaod['questionType'] === 'Summary') {
       const url = `${paylaod.board}_${paylaod.class}_${paylaod.chapter.replace(
         / /g,
         '_'
       )}_Summary`;
-      this.commonService.loadText(url);
+      // this.commonService.loadText(url);
+      this.commonService.loadText('http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Summary');
     }
   }
 

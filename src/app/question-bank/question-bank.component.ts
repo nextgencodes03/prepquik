@@ -1,48 +1,50 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonService } from '../services/common.service';
+import { Component, ViewChild, OnInit } from '@angular/core'
+import { ActivatedRoute, Router } from '@angular/router'
+import { CommonService } from '../services/common.service'
 
 @Component({
   selector: 'app-question-bank',
   templateUrl: './question-bank.component.html',
-  styleUrls: ['./question-bank.component.scss'],
+  styleUrls: ['./question-bank.component.scss']
 })
 export class QuestionBankComponent implements OnInit {
-  public dropdownmodel: any;
-  public pdfSrc: any = null;
-  csvContent: any;
-  convertedArray: Array<any> = [];
-  properties: any = '';
-  @ViewChild('questionBankForm') questionBankForm: any;
+  public dropdownmodel: any
+  csvContent: any
+  convertedArray: Array<any> = []
+  properties: any = ''
+  @ViewChild('questionBankForm') questionBankForm: any
 
-  constructor(public commonService: CommonService, private router: Router) {}
+  constructor (public commonService: CommonService, private router: Router,private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
-    // if (!Object.keys(this.commonService.questionBankPayload).length) {
-    //   window.onbeforeunload = () => {
-    //     // this.commonService.questionBankPayload['board']  = "CBSE";
-    //     // this.commonService.questionBankPayload['class']  = "6";
-    //     this.router.navigateByUrl('/home', { replaceUrl: true });
-    //   };
-    // } else {
-    //   this.commonService.frameDropdownitems(
-    //     this.commonService.questionBankjsonData.banks
-    //   );
-    // }
-    this.onDropDownClick({"value":{"label":"English"}},"subject");
+  ngOnInit (): void {
+    const course  = this.route.snapshot.paramMap.get('course');
+    const id =this.route.snapshot.paramMap.get('id');
+    const defaultPayloadFromStorage = JSON.parse(
+      localStorage.getItem('defaultPayload') || '{}'
+    )
+    if (defaultPayloadFromStorage && defaultPayloadFromStorage.class === id && defaultPayloadFromStorage.board === course) {
+      this.commonService.questionBankPayload=defaultPayloadFromStorage;
+      this.commonService.frameDropdownitems(
+        this.commonService.questionBankjsonData.banks
+      )
+    } else {
+      this.commonService.questionBankPayload['board'] =  course;
+      this.commonService.questionBankPayload['class'] = id;
+      this.commonService.loadDropdownValues();
+    }
+    this.onSubmit()
   }
-
 
   /**
    * when the dropdown Subject/Chapter/Question type this event is triggered
    * @param event - dropdown event
    * @param dropdown - respective dropdown values
    */
-  onDropDownClick(event: any, dropdown: any) {
-    this.updateQuestionBankPayload(dropdown.id, event.value.label);
+  onDropDownClick (event: any, dropdown: any) {
+    this.updateQuestionBankPayload(dropdown.id, event.value.label)
     this.commonService.frameDropdownitems(
       this.commonService.questionBankjsonData.banks
-    );
+    )
   }
 
   /**
@@ -52,20 +54,20 @@ export class QuestionBankComponent implements OnInit {
    * @param id - dropdown id (like -subject/chapter/questionType)
    * @param label - the value selected from the respective dropdown
    */
-  updateQuestionBankPayload(id: any, label: any) {
+  updateQuestionBankPayload (id: any, label: any) {
     const data = this.commonService.getItemsOfSelectedOption(
       this.commonService.questionBankjsonData.banks
-    );
+    )
 
     if (id === 'subject') {
-      const subject = data.subjects.find((sub: any) => sub.label === label);
-      this.commonService.questionBankPayload['subject'] = label;
+      const subject = data.subjects.find((sub: any) => sub.label === label)
+      this.commonService.questionBankPayload['subject'] = label
       this.commonService.questionBankPayload['chapter'] =
-        subject.chapters[0].label;
+        subject.chapters[0].label
       this.commonService.questionBankPayload['questionType'] =
-        subject.chapters[0].questionTypes[0].label;
+        subject.chapters[0].questionTypes[0].label
     } else {
-      this.commonService.questionBankPayload[id] = label;
+      this.commonService.questionBankPayload[id] = label
     }
     // if (id === 'chapter') {
     //   const subject = data.subjects.find((sub: any) => sub.label === this.commonService.questionBankPayload['subject']);
@@ -79,51 +81,59 @@ export class QuestionBankComponent implements OnInit {
    * on Submit the API call happens and the respective value is displayed in the right side of the UI
    * @param event - event is not utilized
    */
-  onSubmit(event: any) {
-    this.commonService.questionAndAnswersArray = [];
-    this.commonService.textContent = '';
-    this.commonService.pdfSrc = null;
-    const paylaod = this.commonService.questionBankPayload;
+  onSubmit (event?: any) {
+    this.commonService.questionAndAnswersArray = []
+    this.commonService.textContent = ''
+    const paylaod = this.commonService.questionBankPayload
+    localStorage.setItem('defaultPayload', JSON.stringify(paylaod))
     if (paylaod['questionType'] === 'Long Answers') {
       const url = `${paylaod.board}_${paylaod.class}_${paylaod.chapter.replace(
         / /g,
         '_'
-      )}_Long Answers`;
+      )}_Long Answers`
       // this.commonService.loadCSV(url);
-      this.commonService.loadCSV('http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Long Answers');
+      this.commonService.loadCSV(
+        'http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Long Answers'
+      )
     }
     if (paylaod['questionType'] === 'Short Answers') {
       const url = `${paylaod.board}_${paylaod.class}_${paylaod.chapter.replace(
         / /g,
         '_'
-      )}_Short Answers`;
+      )}_Short Answers`
       // this.commonService.loadCSV(url);
-      this.commonService.loadCSV('http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Short Answers');
+      this.commonService.loadCSV(
+        'http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Short Answers'
+      )
     }
     if (paylaod['questionType'] === 'Multiple Choice') {
       const url = `${paylaod.board}_${paylaod.class}_${paylaod.chapter.replace(
         / /g,
         '_'
-      )}_Multiple Choice`;
+      )}_Multiple Choice`
       // this.commonService.loadCSV(url);
-      this.commonService.loadCSV('http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Multiple Choice');
+      this.commonService.loadCSV(
+        'http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Multiple Choice'
+      )
     }
     if (paylaod['questionType'] === 'Summary') {
       const url = `${paylaod.board}_${paylaod.class}_${paylaod.chapter.replace(
         / /g,
         '_'
-      )}_Summary`;
+      )}_Summary`
       // this.commonService.loadText(url);
-      this.commonService.loadText('http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Summary');
+      this.commonService.loadText(
+        'http://127.0.0.1:8080/get_file/CBSE_10_Civics_Outcomes of Democracy_Summary'
+      )
     }
   }
 
   /**
    * to open question bank content in PDF format in a new window tab
    */
-  OpenPdf() {
-    const paylaod = this.commonService.questionBankPayload;
-    const getURL = `${paylaod.board}/${paylaod.class}/${paylaod.subject}/${paylaod.chapter}${paylaod.chapter}.pdf`;
-    this.commonService.loadPdf(getURL);
+  OpenPdf () {
+    const paylaod = this.commonService.questionBankPayload
+    const getURL = `${paylaod.board}/${paylaod.class}/${paylaod.subject}/${paylaod.chapter}${paylaod.chapter}.pdf`
+    this.commonService.loadPdf(getURL)
   }
 }

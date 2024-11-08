@@ -1,50 +1,50 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { CommonService } from '../services/common.service';
-import { ThemeService } from '../services/theme.service';
-import { DEFAULT_NAMES, DEFAULT_URL } from '../utils/constants';
+import { Component, OnInit, ViewChild } from '@angular/core'
+import { Router } from '@angular/router'
+import { CommonService } from '../services/common.service'
+import { ThemeService } from '../services/theme.service'
+import { DEFAULT_NAMES, DEFAULT_URL } from '../utils/constants'
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  @ViewChild('menuBar') menuBar: any;
-  public menuitems: any = [];
-  public sortedbank: any = [];
-  public selectedTheme = 'dark';
-  public isDarkTheme = true;
-  public defNames = DEFAULT_NAMES;
-  public defUrls = DEFAULT_URL;
-  constructor(
+  @ViewChild('menuBar') menuBar: any
+  public menuitems: any = []
+  public sortedbank: any = []
+  public selectedTheme = 'dark'
+  public isDarkTheme = true
+  public defNames = DEFAULT_NAMES
+  public defUrls = DEFAULT_URL
+  constructor (
     private commonService: CommonService,
     private router: Router,
     public themeService: ThemeService
   ) {
-    this.commonService.fetchMenuItemFromJson();
+    this.commonService.fetchMenuItemFromJson()
   }
 
   /**
    * set the theme and get the json data through DI and convert it into dropdown readable format
    * and bind the action methods
    */
-  ngOnInit(): void {
-    this.themeService.activeTheme = this.selectedTheme;
-    this.menuitems = this.commonService.menuItemJsonData.menuItems;
+  ngOnInit (): void {
+    this.themeService.activeTheme = this.selectedTheme
+    this.menuitems = this.commonService.menuItemJsonData.menuItems
     const coursesMenu = this.menuitems.find(
       (menu: any) => menu.label === this.defNames.COURSES
-    );
-    coursesMenu.items = this.prepareCoursesList();
-    this.addCommand(this.menuitems);
+    )
+    coursesMenu.items = this.prepareCoursesList()
+    this.addCommand(this.menuitems)
   }
 
   /**
    * Prepares the course list from the JSON into a dropdown readable format.
    */
-  prepareCoursesList() {
-    const data = this.commonService.questionBankjsonData.banks;
-    const items: any = [];
+  prepareCoursesList () {
+    const data = this.commonService.questionBankjsonData.banks
+    const items: any = []
     if (data.boards?.length)
       data.boards.forEach((board: any) => {
         if (board.classes?.length) {
@@ -56,15 +56,15 @@ export class HeaderComponent implements OnInit {
                 label: grade.label,
                 entity: 'class',
                 board: board.label,
-                class: grade.label,
-              };
-            }),
-          });
+                class: grade.label
+              }
+            })
+          })
         } else {
-          items.push({ label: board.label });
+          items.push({ label: board.label })
         }
-      });
-    return items;
+      })
+    return items
   }
 
   /**
@@ -72,14 +72,14 @@ export class HeaderComponent implements OnInit {
    * @param menuitems - Already formatted options prepareCoursesList() method
    * @returns The total price including tax.
    */
-  addCommand(menuitems: any) {
+  addCommand (menuitems: any) {
     menuitems.forEach((element: any) => {
       if (element.items?.length) {
-        this.addCommand(element.items);
+        this.addCommand(element.items)
       } else {
-        element.command = this.command.bind(this);
+        element.command = this.command.bind(this)
       }
-    });
+    })
   }
 
   /**
@@ -88,37 +88,30 @@ export class HeaderComponent implements OnInit {
    * those values are configured
    * @param event - event triggered on clicking the nav bar items
    */
-  command(event: any) {
+  command (event: any) {
     if (event.item.meta === 'Home') {
-      this.router.navigateByUrl('/home');
-    } else if (event.item.entity === 'class') {
-      this.commonService.questionAndAnswersArray = [];
-      this.commonService.questionBankPayload = [];
-      this.commonService.questionBankPayload['board'] = event.item.board;
-      this.commonService.questionBankPayload['class'] = event.item.label;
-      const data = this.commonService.getItemsOfSelectedOption(
-        this.commonService.questionBankjsonData.banks
-      );
-      this.commonService.questionBankPayload['subject'] =
-        data.subjects[0].label;
-      this.commonService.questionBankPayload['chapter'] =
-        data.subjects[0].chapters[0].label;
-      this.commonService.questionBankPayload['questionType'] =
-        data.subjects[0].chapters[0].questionTypes[0].label;
-      this.commonService.frameDropdownitems(
-        this.commonService.questionBankjsonData.banks
-      );
-      this.router.navigateByUrl('/bank');
+      this.router.navigateByUrl('/home')
     } else if (event.item.meta === 'About') {
-      this.router.navigateByUrl('/about');
+      this.router.navigateByUrl('/about')
+    } else if (event.item.entity === 'class') {
+      this.commonService.questionAndAnswersArray = []
+      this.commonService.questionBankPayload = {}
+      this.commonService.questionBankPayload['board'] = event.item.board
+      this.commonService.questionBankPayload['class'] = event.item.label
+      this.commonService.loadDropdownValues();
+      localStorage.setItem(
+        'defaultPayload',
+        JSON.stringify(this.commonService.questionBankPayload)
+      )
+      this.router.navigateByUrl(`/course/${event.item.board}/class/${event.item.label}`)
     }
   }
 
   /**
    * event triggered to update the them change
    */
-  onThemeChange(theme: string) {
-    this.selectedTheme = theme;
-    this.themeService.activeTheme = theme;
+  onThemeChange (theme: string) {
+    this.selectedTheme = theme
+    this.themeService.activeTheme = theme
   }
 }

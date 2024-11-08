@@ -18,7 +18,7 @@ export class CommonService {
   public questionBankdropdowns: any;
   convertedText: string = '';
 
-  constructor(private http: HttpClient, private apiService: ApiService) {}
+  constructor(private http: HttpClient, private apiService: ApiService) { }
 
   /**
    * to fetch the json data from assests / from DB
@@ -176,5 +176,24 @@ export class CommonService {
       listData.unshift(prop);
     }
     return listData;
+  }
+
+  /**
+ * loads the dropdown options for the subject,chapter and question type on board and class seelection from header 
+ * @param event - dropdown event
+ * @param dropdown - respective dropdown values
+ */
+  loadDropdownValues() {
+    const data = this.getItemsOfSelectedOption(
+      this.questionBankjsonData.banks
+    )
+    this.questionBankPayload['subject'] = data.subjects[0].label
+    this.questionBankPayload['chapter'] =
+      data.subjects[0].chapters[0].label
+    this.questionBankPayload['questionType'] =
+      data.subjects[0].chapters[0].questionTypes[0].label
+    this.frameDropdownitems(
+      this.questionBankjsonData.banks
+    )
   }
 }

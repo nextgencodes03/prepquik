@@ -19,6 +19,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ImageModule } from 'primeng/image';
 import { ToolbarModule } from 'primeng/toolbar';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +27,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     FooterComponent,
     SectionComponent,
     QuestionBankComponent,
-    AboutComponent
+    AboutComponent,
+    PagenotfoundComponent
   ],
   imports: [
     BrowserModule,

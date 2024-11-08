@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { QuestionBankComponent } from './question-bank/question-bank.component';
 import { AboutComponent } from './about/about.component';
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 
 const routes: Routes = [
   {
@@ -10,7 +11,7 @@ const routes: Routes = [
     component:SectionComponent
   },
   {
-    path:'bank',
+    path:'course/:course/class/:id',
     component:QuestionBankComponent
   },
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
     redirectTo:'home',
     pathMatch:'full'
   },
+  {
+    path:'**',
+    component:PagenotfoundComponent
+  }
 ];
 
 @NgModule({

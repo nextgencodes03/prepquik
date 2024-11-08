@@ -6,6 +6,12 @@ app-section {
   flex-grow: 1;
   display: block;
 }
+.custom_menubar {
+  .p-menubar-end{
+    display: flex;
+    align-items: flex-end;   
+  }
+}
 
 .inputSwitch {
   transform: scale(0.75);

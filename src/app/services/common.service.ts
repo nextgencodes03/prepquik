@@ -70,41 +70,6 @@ export class CommonService {
       });
   }
 
-  loadAndConvertDocx() {
-    // this.http
-    //   .get('/assets/docs/About PrepQuik.docx', { responseType: 'blob' })
-    //   .subscribe((blob) => {
-    //     this.convertDocxToText(blob as File)
-    //       .then((text) => {
-    //         this.aboutTextContent = text;
-    //       })
-    //       .catch((error) => {
-    //         console.error('Error converting file:', error);
-    //       });
-    //   });
-  }
-
-  // convertDocxToText(file: File): Promise<string> {
-  //   return new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.onload = (event) => {
-  //       const arrayBuffer: any = event.target?.result;
-  //       if (arrayBuffer) {
-  //         mammoth
-  //           .extractRawText({ arrayBuffer: arrayBuffer })
-  //           .then((result) => {
-  //             resolve(result.value); // The extracted text
-  //           })
-  //           .catch((err) => {
-  //             reject(err);
-  //           });
-  //       }
-  //     };
-  //     reader.onerror = (err) => reject(err);
-  //     reader.readAsArrayBuffer(file);
-  //   });
-  // }
-
   getItemsOfSelectedOption(data: any) {
     return data?.boards
       ?.find((board: any) => board.label == this.questionBankPayload.board)

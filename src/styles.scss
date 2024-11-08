@@ -13,6 +13,18 @@ app-section {
   }
 }
 
+.about_card{
+  .p-card{
+    background-color: var(--landing-body-bg);
+    border: none;
+    border-radius: inherit;
+    font-size: medium;
+  }
+  .p-card-body{
+    padding: 10px 150px;
+  }
+}
+
 .inputSwitch {
   transform: scale(0.75);
 }

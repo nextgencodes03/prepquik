@@ -13,7 +13,6 @@ constructor(public commonService:CommonService)
 }
 ngOnInit(): void {
   this.commonService.aboutTextContent = '';
-  this.commonService.loadAndConvertDocx();
 }
 
 
